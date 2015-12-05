@@ -286,8 +286,19 @@ restore() {
 patch_hosts() {
 	head
 	show_sections_title "Patching HOSTS file..."
+	TODAY=$(date)
+	echo "# ${TODAY}" > res/hosts
+	mkdir tmp
+	echo -e "### Upgrading sources..."
+	wget -O tmp/hosts1.txt 'http://hosts-file.net/ad_servers.txt'
+	wget -O tmp/hosts2.txt 'http://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0&mimetype=plaintext'
+	wget -O tmp/hosts3.txt 'http://winhelp2002.mvps.org/hosts.txt'
+	wget -O tmp/hosts4.txt 'https://adaway.org/hosts.txt'
+	echo -e "### Merging rources..."
+	sort -u tmp/hosts1.txt tmp/hosts2.txt tmp/hosts3.txt tmp/hosts4.txt | sed '/^#/ d' | sed '/^::/ d' >> res/hosts
 	#prepare_adb
 	root_remount
+	echo -e "### Pushing the new HOSTS..."
 	adb push res/hosts /system/etc/hosts
 	show_sections_title "Patch complete, rebooting!"
 	adb reboot
@@ -386,7 +397,12 @@ prepare_adb() {
 	fi
 }
 
+check_adb() {
+	type adb >/dev/null 2>&1 || { show_sections_title "I require adb but it's not installed.  Aborting."; exit 1; }
+}
+
 prepare_adb_first() {
+	check_adb
 	show_sections_title "Setting ADB"
 	sudo adb kill-server
 	# Start ADB as sudo
@@ -406,12 +422,16 @@ prepare_adb_first() {
 
 root_remount() {
 	echo -e "Mounting / as root"
-	adb remount
-	# Remount root partition read-write
-	adb shell mount -o rw,remount /
-	# Remount system partition read-write
-	adb shell mount -o rw,remount /system
-	echo -e "### device remounted with rw privileges."
+	echo -e "### waiting for the device, please ensure it is connected, switched on and remote debugging is enabled"
+	if adb wait-for-device; then
+		echo -e "### device found"
+		adb remount
+		# Remount root partition read-write
+		adb shell mount -o rw,remount /
+		# Remount system partition read-write
+		adb shell mount -o rw,remount /system
+		echo -e "### device remounted with rw privileges."
+	fi
 }
 
 end() {
