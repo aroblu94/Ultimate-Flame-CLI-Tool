@@ -214,6 +214,7 @@ backup() {
 	echo -e "3) Backup WIFI networks"
 	echo -e "4) Backup Internal Memory Card"
 	echo -e "5) Backup B2G"
+	echo -e ""
 	echo -e "99) Back to main menu"
 	read INBACKUP
 	case $INBACKUP in
@@ -251,6 +252,7 @@ restore() {
 	echo -e "3) Restore WIFI networks"
 	echo -e "4) Restore Internal Memory Card"
 	echo -e "5) Restore B2G"
+	echo -e ""
 	echo -e "99) Back to main menu"
 	read INRESTORE
 	case $INRESTORE in
@@ -308,6 +310,7 @@ host() {
 	show_sections_title "Choose an option:"
 	echo -e "1) Patch HOSTS file (no more ads)"
 	echo -e "2) Restore stock HOSTS file"
+	echo -e ""
 	echo -e "99) Back to main menu"
 	read INHOST
 	case $INHOST in
@@ -373,7 +376,7 @@ prepare_adb() {
 	# Start ADB as sudo
 	sudo adb start-server
 	echo -e "### adb service started"
-	echo -e "### waiting for the device, make sure it's plugged"
+	echo -e "### waiting for the device, please ensure it is connected, switched on and remote debugging is enabled"
 	if adb wait-for-device; then
 		echo -e "### device found"
 		# Forward
@@ -389,7 +392,7 @@ prepare_adb_first() {
 	# Start ADB as sudo
 	sudo adb start-server
 	echo -e "### adb service started"
-	echo -e "### waiting for the device, make sure it's plugged"
+	echo -e "### waiting for the device, please ensure it is connected, switched on and remote debugging is enabled"
 	if adb wait-for-device; then
 		echo -e "### device found"
 		# Forward
@@ -432,6 +435,7 @@ loop() {
 	echo -e "--------- Misc ---------"
 	echo -e "6) HOSTS file"
 	echo -e "7) Add UDEV rules"
+	echo -e ""
 	echo -e "99) Exit"
 	read INPUT
 	case $INPUT in
@@ -487,7 +491,7 @@ first_loop() {
 
 head() {
 	clear
-	show_head "#----------------------------------#\n#   Flame Nightly Updater Script   #\n#----------------------------------#\n"
+	show_head "#-------------------------------#\n#    Ultimate Flame CLI Tool    #\n#-------------------------------#\n"
 }
 ########
 # MAIN #
